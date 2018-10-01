@@ -1,2 +1,2 @@
 # spotted-auth
-Spotted Auth API
+Spotted Auth Service
