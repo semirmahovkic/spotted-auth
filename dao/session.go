@@ -1,9 +1,8 @@
 package dao
 
 import (
-	"time"
-
 	"github.com/x64puzzle/spotted-common/storage"
+	"github.com/x64puzzle/spotted-common/util"
 )
 
 // Session Data Access Object
@@ -11,7 +10,7 @@ type Session struct{}
 
 // Create new session
 func (s *Session) Create(key, val string) error {
-	if err := storage.Redis.Set(key, val, 24*time.Hour).Err(); err != nil {
+	if err := storage.Redis.Set(key, val, util.LoginExp).Err(); err != nil {
 		return err
 	}
 

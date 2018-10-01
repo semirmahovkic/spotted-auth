@@ -82,6 +82,8 @@ func TestLogoutGRPC(t *testing.T) {
 	}
 
 	assert.NotNil(t, resp, "Response should not be nil")
+
+	l.Log.Info("Logout resp: ", resp)
 }
 
 func TestPasswordResetGRPC(t *testing.T) {
@@ -101,4 +103,6 @@ func TestPasswordResetGRPC(t *testing.T) {
 	}
 
 	assert.NotNil(t, resp, "Response should not be nil")
+
+	l.Log.Info("Password reset resp: ", resp)
 }
