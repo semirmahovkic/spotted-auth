@@ -17,6 +17,8 @@ import (
 var env = config.NewAuth()
 
 func TestRegisterGRPC(t *testing.T) {
+	t.SkipNow()
+
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
 	if err != nil {
 		l.Log.Info("Failed to dial grpc: ", err)
@@ -36,7 +38,7 @@ func TestRegisterGRPC(t *testing.T) {
 
 	assert.NotNil(t, resp, "Response should not be nil")
 
-	l.Log.Info("Resp: ", resp)
+	l.Log.Info("Register resp: ", resp)
 }
 
 func TestLoginGRPC(t *testing.T) {
@@ -57,6 +59,8 @@ func TestLoginGRPC(t *testing.T) {
 	}
 
 	assert.NotNil(t, resp, "Response should not be nil")
+
+	l.Log.Info("Login resp: ", resp)
 }
 
 func TestLogoutGRPC(t *testing.T) {
