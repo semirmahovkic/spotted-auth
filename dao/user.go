@@ -2,6 +2,7 @@ package dao
 
 import (
 	l "github.com/x64puzzle/spotted-common/log"
+	"github.com/x64puzzle/spotted-common/storage"
 	"github.com/x64puzzle/spotted-common/util"
 	pb "github.com/x64puzzle/spotted-proto/auth"
 )
@@ -16,12 +17,17 @@ func (u *User) Register(req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	uuid := util.UUID()
 
 	req.ID = uuid
+	pwd, err := util.HashPassword(req.Password)
+	if err != nil {
+		return nil, err
+	}
 
-	// TODO: Insert into db
+	_, err = storage.PG.Query("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
+	if err != nil {
+		return nil, err
+	}
 
-	resp := &pb.RegisterResponse{}
-
-	return resp, nil
+	return &pb.RegisterResponse{}, nil
 }
 
 // Login user account

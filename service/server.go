@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/x64puzzle/spotted-auth/dao"
+	l "github.com/x64puzzle/spotted-common/log"
 	"github.com/x64puzzle/spotted-common/util"
 	pb "github.com/x64puzzle/spotted-proto/auth"
 )
@@ -32,6 +33,8 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Reg
 	if err != nil {
 		return nil, err
 	}
+
+	l.Log.Info("Req: ", req)
 
 	resp.Token = token
 
