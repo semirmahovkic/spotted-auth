@@ -89,7 +89,15 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 
 // Logout implements spotted-proto/auth.Service.Logout
 func (s *Server) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutResponse, error) {
+	session := &dao.Session{}
+
+	if err := session.Destroy(req.Email); err != nil {
+		return nil, err
+	}
+
 	resp := &pb.LogoutResponse{}
+
+	resp.Success = true
 
 	return resp, nil
 }
