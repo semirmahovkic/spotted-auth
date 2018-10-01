@@ -3,19 +3,96 @@
 package main_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/x64puzzle/spotted-common/storage"
+	"github.com/x64puzzle/spotted-common/config"
+	l "github.com/x64puzzle/spotted-common/log"
+	pb "github.com/x64puzzle/spotted-proto/auth"
+	"google.golang.org/grpc"
 )
 
-func StorageEngineTest(t *testing.T) {
-	storage.Init(storage.PGBitMask)
+var env = config.NewAuth()
 
-	assert.NotNil(t, storage.PGClient, "PG client should not be nil")
+func TestRegisterGRPC(t *testing.T) {
+	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
+	if err != nil {
+		l.Log.Info("Failed to dial grpc: ", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewAuthClient(conn)
+
+	resp, err := client.Register(context.Background(), &pb.RegisterRequest{
+		Username: "semir",
+		Email:    "semir@mail.com",
+		Password: "pwd123",
+	})
+	if err != nil {
+		l.Log.Error("Failed to call Register: ", err)
+	}
+
+	assert.NotNil(t, resp, "Response should not be nil")
+
+	l.Log.Info("Resp: ", resp)
 }
 
-func GRPCServerTest(t *testing.T) {
+func TestLoginGRPC(t *testing.T) {
+	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
+	if err != nil {
+		l.Log.Info("Failed to dial grpc: ", err)
+	}
+	defer conn.Close()
 
+	client := pb.NewAuthClient(conn)
+
+	resp, err := client.Login(context.Background(), &pb.LoginRequest{
+		Email:    "semir@mail.com",
+		Password: "pwd123",
+	})
+	if err != nil {
+		l.Log.Error("Failed to call Login: ", err)
+	}
+
+	assert.NotNil(t, resp, "Response should not be nil")
+}
+
+func TestLogoutGRPC(t *testing.T) {
+	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
+	if err != nil {
+		l.Log.Info("Failed to dial grpc: ", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewAuthClient(conn)
+
+	resp, err := client.Logout(context.Background(), &pb.LogoutRequest{
+		Token: "token-123",
+	})
+	if err != nil {
+		l.Log.Error("Failed to call Logout: ", err)
+	}
+
+	assert.NotNil(t, resp, "Response should not be nil")
+}
+
+func TestPasswordResetGRPC(t *testing.T) {
+	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
+	if err != nil {
+		l.Log.Info("Failed to dial grpc: ", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewAuthClient(conn)
+
+	resp, err := client.PasswordReset(context.Background(), &pb.PasswordResetRequest{
+		Email: "semir@mail.com",
+	})
+	if err != nil {
+		l.Log.Error("Failed to call PasswordReset: ", err)
+	}
+
+	assert.NotNil(t, resp, "Response should not be nil")
 }
