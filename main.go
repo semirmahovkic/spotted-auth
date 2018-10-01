@@ -10,7 +10,7 @@ import (
 func main() {
 	l.Log.Info("Spotted Auth Service")
 
-	if err := storage.Init(storage.PGBitMask); err != nil {
+	if err := storage.Init(storage.PGBitMask | storage.RedisBitMask); err != nil {
 		l.Log.Fatal("Storage engine initialization failed: ", err)
 	}
 
