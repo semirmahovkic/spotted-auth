@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/lib/pq"
+	"github.com/x64puzzle/spotted-auth/service"
 	l "github.com/x64puzzle/spotted-common/log"
 	"github.com/x64puzzle/spotted-common/storage"
 )
@@ -12,4 +13,6 @@ func main() {
 	if err := storage.Init(storage.PGBitMask); err != nil {
 		l.Log.Fatal("Storage engine initialization failed: ", err)
 	}
+
+	service.ListenGRPC()
 }
