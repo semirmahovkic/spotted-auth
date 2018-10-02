@@ -20,9 +20,9 @@ func TestRegister(t *testing.T) {
 	t.SkipNow()
 
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
-	if err != nil {
-		l.Log.Info("Failed to dial grpc: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
+
 	defer conn.Close()
 
 	client := pb.NewAuthClient(conn)
@@ -32,9 +32,8 @@ func TestRegister(t *testing.T) {
 		Email:    "semir@mail.com",
 		Password: "pwd123",
 	})
-	if err != nil {
-		l.Log.Error("Failed to call Register: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
 
 	assert.NotNil(t, resp, "Response should not be nil")
 
@@ -43,9 +42,9 @@ func TestRegister(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
-	if err != nil {
-		l.Log.Info("Failed to dial grpc: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
+
 	defer conn.Close()
 
 	client := pb.NewAuthClient(conn)
@@ -54,9 +53,8 @@ func TestLogin(t *testing.T) {
 		Email:    "semir@mail.com",
 		Password: "pwd123",
 	})
-	if err != nil {
-		l.Log.Error("Failed to call Login: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
 
 	assert.NotNil(t, resp, "Response should not be nil")
 
@@ -65,9 +63,9 @@ func TestLogin(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
-	if err != nil {
-		l.Log.Info("Failed to dial grpc: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
+
 	defer conn.Close()
 
 	client := pb.NewAuthClient(conn)
@@ -75,9 +73,8 @@ func TestLogout(t *testing.T) {
 	resp, err := client.Logout(context.Background(), &pb.LogoutRequest{
 		Email: "semir@mail.com",
 	})
-	if err != nil {
-		l.Log.Error("Failed to call Logout: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
 
 	assert.NotNil(t, resp, "Response should not be nil")
 
@@ -86,9 +83,9 @@ func TestLogout(t *testing.T) {
 
 func TestCreateResetToken(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
-	if err != nil {
-		l.Log.Info("Failed to dial grpc: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
+
 	defer conn.Close()
 
 	client := pb.NewAuthClient(conn)
@@ -96,9 +93,8 @@ func TestCreateResetToken(t *testing.T) {
 	resp, err := client.CreateResetToken(context.Background(), &pb.ResetTokenRequest{
 		Email: "semir@mail.com",
 	})
-	if err != nil {
-		l.Log.Error("Failed to call CreateResetToken: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
 
 	assert.NotNil(t, resp, "Response should not be nil")
 	assert.NotEmpty(t, resp.Token, "Token not generated")
@@ -108,9 +104,9 @@ func TestCreateResetToken(t *testing.T) {
 
 func TestDeleteResetToken(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
-	if err != nil {
-		l.Log.Info("Failed to dial grpc: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
+
 	defer conn.Close()
 
 	client := pb.NewAuthClient(conn)
@@ -118,9 +114,8 @@ func TestDeleteResetToken(t *testing.T) {
 	resp, err := client.DeleteResetToken(context.Background(), &pb.ResetTokenRequest{
 		Email: "semir@mail.com",
 	})
-	if err != nil {
-		l.Log.Error("Failed to call DeleteResetToken: ", err)
-	}
+
+	assert.NoError(t, err, "Err occured: ", err)
 
 	assert.NotNil(t, resp, "Response should not be nil")
 	assert.True(t, resp.Success, "Token not deleted")
