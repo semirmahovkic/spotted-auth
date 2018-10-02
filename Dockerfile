@@ -8,6 +8,6 @@ RUN ["/bin/bash", "-c", "go get -v -d ./..."]
 
 RUN go build .
 
-EXPOSE 8888
+EXPOSE 8001
 
 CMD ./spotted-auth
