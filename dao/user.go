@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"database/sql"
+
 	"github.com/x64puzzle/spotted-common/storage"
 	"github.com/x64puzzle/spotted-common/util"
 	pb "github.com/x64puzzle/spotted-proto/auth"
@@ -83,11 +85,11 @@ func (u *User) DeleteResetToken(req *pb.ResetTokenRequest) (*pb.DeleteResetToken
 
 // getResetToken by email
 func (u *User) getResetToken(email string) (string, error) {
-	var token string
+	var token sql.NullString
 
 	if err := storage.PG.QueryRow("SELECT * FROM get_reset_token($1);", email).Scan(&token); err != nil {
 		return "", err
 	}
 
-	return token, nil
+	return token.String, nil
 }

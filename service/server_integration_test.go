@@ -17,8 +17,6 @@ import (
 var env = config.NewAuth()
 
 func TestRegister(t *testing.T) {
-	t.SkipNow()
-
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
 
 	assert.NoError(t, err, "Err occured: ", err)
