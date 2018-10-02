@@ -96,17 +96,28 @@ func (s *Server) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutR
 	}
 
 	resp := &pb.LogoutResponse{}
-
 	resp.Success = true
 
 	return resp, nil
 }
 
-// PasswordReset implements spotted-proto/auth.Service.PasswordReset
-func (s *Server) PasswordReset(ctx context.Context, req *pb.PasswordResetRequest) (*pb.PasswordResetResponse, error) {
+// CreateResetToken implements spotted-proto/auth.Service.CreateResetToken
+func (s *Server) CreateResetToken(ctx context.Context, req *pb.ResetTokenRequest) (*pb.ResetTokenResponse, error) {
 	userDao := &dao.User{}
 
-	resp, err := userDao.PasswordReset(req)
+	resp, err := userDao.CreateResetToken(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+// DeleteResetToken implements spotted-proto/auth.Service.DeleteResetToken
+func (s *Server) DeleteResetToken(ctx context.Context, req *pb.ResetTokenRequest) (*pb.DeleteResetTokenResponse, error) {
+	userDao := &dao.User{}
+
+	resp, err := userDao.DeleteResetToken(req)
 	if err != nil {
 		return nil, err
 	}

@@ -1,3 +1,4 @@
+-- table users
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id varchar(64) PRIMARY KEY,
@@ -9,16 +10,59 @@ CREATE TABLE users (
     UNIQUE(email)
 );
 
-CREATE OR REPLACE FUNCTION create_user(id varchar(64), username varchar(50), email varchar(255), password varchar(255))
+-- table password_reset
+DROP TABLE IF EXISTS password_reset;
+CREATE TABLE password_reset (
+    email varchar(255) NOT NULL,
+    token varchar(255) DEFAULT NULL,
+    create_at integer DEFAULT EXTRACT(EPOCH FROM NOW()),
+    UNIQUE(email)
+);
+
+-- function create_user
+CREATE OR REPLACE FUNCTION create_user(_id varchar(64), _username varchar(50), _email varchar(255), _password varchar(255))
 RETURNS VOID
 LANGUAGE SQL
 AS $$
-    INSERT INTO users VALUES (id, username, email, password);
+    INSERT INTO users VALUES (_id, _username, _email, _password);
 $$;
 
-CREATE OR REPLACE FUNCTION get_user_by_email(_email varchar(255))
+-- function get_by_email
+CREATE OR REPLACE FUNCTION get_by_email(_email varchar(255))
 RETURNS TABLE (id varchar(64), username varchar(50), email varchar(255), password varchar(255), created_at integer)
 LANGUAGE SQL
 AS $$
     SELECT * FROM users WHERE email = _email LIMIT 1;
+$$;
+
+-- function create_reset_token
+CREATE OR REPLACE FUNCTION create_reset_token(_email varchar(255), _token varchar(255))
+RETURNS VOID
+LANGUAGE SQL
+AS $$
+    INSERT INTO password_reset VALUES (_email, _token);
+$$;
+
+-- function get_reset_token
+CREATE OR REPLACE FUNCTION get_reset_token(_email varchar(255))
+RETURNS varchar(255)
+LANGUAGE SQL
+AS $$
+    SELECT token FROM password_reset WHERE email = _email LIMIT 1;
+$$;
+
+-- function update_reset_token
+CREATE OR REPLACE FUNCTION update_reset_token(_email varchar(255), _token varchar(255))
+RETURNS VOID
+LANGUAGE SQL
+AS $$
+    UPDATE password_reset SET token = _token WHERE email = _email;
+$$;
+
+-- function delete_reset_token
+CREATE OR REPLACE FUNCTION delete_reset_token(_email varchar(255))
+RETURNS VOID
+LANGUAGE SQL
+AS $$
+    DELETE FROM password_reset WHERE email = _email;
 $$;

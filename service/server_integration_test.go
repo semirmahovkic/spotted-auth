@@ -1,6 +1,6 @@
 // +build int
 
-package main_test
+package service_test
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 
 var env = config.NewAuth()
 
-func TestRegisterGRPC(t *testing.T) {
+func TestRegister(t *testing.T) {
 	t.SkipNow()
 
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
@@ -41,7 +41,7 @@ func TestRegisterGRPC(t *testing.T) {
 	l.Log.Info("Register resp: ", resp)
 }
 
-func TestLoginGRPC(t *testing.T) {
+func TestLogin(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
 	if err != nil {
 		l.Log.Info("Failed to dial grpc: ", err)
@@ -63,9 +63,7 @@ func TestLoginGRPC(t *testing.T) {
 	l.Log.Info("Login resp: ", resp)
 }
 
-func TestLogoutGRPC(t *testing.T) {
-	t.SkipNow()
-
+func TestLogout(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
 	if err != nil {
 		l.Log.Info("Failed to dial grpc: ", err)
@@ -86,7 +84,7 @@ func TestLogoutGRPC(t *testing.T) {
 	l.Log.Info("Logout resp: ", resp)
 }
 
-func TestPasswordResetGRPC(t *testing.T) {
+func TestCreateResetToken(t *testing.T) {
 	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
 	if err != nil {
 		l.Log.Info("Failed to dial grpc: ", err)
@@ -95,14 +93,37 @@ func TestPasswordResetGRPC(t *testing.T) {
 
 	client := pb.NewAuthClient(conn)
 
-	resp, err := client.PasswordReset(context.Background(), &pb.PasswordResetRequest{
+	resp, err := client.CreateResetToken(context.Background(), &pb.ResetTokenRequest{
 		Email: "semir@mail.com",
 	})
 	if err != nil {
-		l.Log.Error("Failed to call PasswordReset: ", err)
+		l.Log.Error("Failed to call CreateResetToken: ", err)
 	}
 
 	assert.NotNil(t, resp, "Response should not be nil")
+	assert.NotEmpty(t, resp.Token, "Token not generated")
 
-	l.Log.Info("Password reset resp: ", resp)
+	l.Log.Info("CreateResetToken resp: ", resp)
+}
+
+func TestDeleteResetToken(t *testing.T) {
+	conn, err := grpc.Dial(":"+env.Port, grpc.WithInsecure())
+	if err != nil {
+		l.Log.Info("Failed to dial grpc: ", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewAuthClient(conn)
+
+	resp, err := client.DeleteResetToken(context.Background(), &pb.ResetTokenRequest{
+		Email: "semir@mail.com",
+	})
+	if err != nil {
+		l.Log.Error("Failed to call DeleteResetToken: ", err)
+	}
+
+	assert.NotNil(t, resp, "Response should not be nil")
+	assert.True(t, resp.Success, "Token not deleted")
+
+	l.Log.Info("DeleteResetToken resp: ", resp)
 }
