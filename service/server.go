@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/x64puzzle/spotted-auth/dao"
-	"github.com/x64puzzle/spotted-common/util"
-	pb "github.com/x64puzzle/spotted-proto/auth"
+	"github.com/x64integer/go-common/util"
+	"github.com/x64integer/spotted-auth/dao"
+	pb "github.com/x64integer/spotted-proto/auth"
 )
 
 // Server implements spotted-proto/auth.Service

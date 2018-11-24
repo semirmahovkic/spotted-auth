@@ -7,10 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/x64puzzle/spotted-common/config"
-	l "github.com/x64puzzle/spotted-common/log"
-	pb "github.com/x64puzzle/spotted-proto/auth"
+	"github.com/x64integer/spotted-common/config"
+	l "github.com/x64integer/spotted-common/log"
+	pb "github.com/x64integer/spotted-proto/auth"
 	"google.golang.org/grpc"
 )
 

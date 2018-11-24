@@ -3,10 +3,10 @@ package dao
 import (
 	"database/sql"
 
-	"github.com/x64puzzle/spotted-common/storage"
-	"github.com/x64puzzle/spotted-common/util"
-	pb "github.com/x64puzzle/spotted-proto/auth"
-	pbu "github.com/x64puzzle/spotted-proto/user"
+	"github.com/x64integer/go-common/storage"
+	"github.com/x64integer/go-common/util"
+	pb "github.com/x64integer/spotted-proto/auth"
+	pbu "github.com/x64integer/spotted-proto/user"
 )
 
 // User Data Access Object

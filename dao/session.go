@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"github.com/x64puzzle/spotted-common/storage"
-	"github.com/x64puzzle/spotted-common/util"
+	"github.com/x64integer/go-common/storage"
+	"github.com/x64integer/go-common/util"
 )
 
 // Session Data Access Object
