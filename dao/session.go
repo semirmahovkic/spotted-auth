@@ -1,9 +1,9 @@
 package dao
 
 import (
+	"github.com/x64integer/go-common/storage"
 	"github.com/x64integer/go-common/storage/cache"
 	"github.com/x64integer/go-common/util"
-	"github.com/x64integer/spotted-auth/storage"
 )
 
 // Session Data Access Object

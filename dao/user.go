@@ -3,8 +3,8 @@ package dao
 import (
 	"database/sql"
 
+	"github.com/x64integer/go-common/storage"
 	"github.com/x64integer/go-common/util"
-	"github.com/x64integer/spotted-auth/storage"
 	pb "github.com/x64integer/spotted-proto/auth"
 	pbu "github.com/x64integer/spotted-proto/user"
 )
@@ -22,7 +22,7 @@ func (u *User) Register(req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 		return nil, err
 	}
 
-	storage.DB.QueryRow("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
+	storage.PG.QueryRow("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
 
 	return &pb.RegisterResponse{}, nil
 }
@@ -33,7 +33,7 @@ func (u *User) Register(req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 func (u *User) GetByEmail(email string) (*pbu.Account, error) {
 	acc := &pbu.Account{}
 
-	if err := storage.DB.QueryRow("SELECT * FROM get_by_email($1);", email).Scan(&acc.ID, &acc.Username, &acc.Email, &acc.Password, &acc.CreatedAt); err != nil {
+	if err := storage.PG.QueryRow("SELECT * FROM get_by_email($1);", email).Scan(&acc.ID, &acc.Username, &acc.Email, &acc.Password, &acc.CreatedAt); err != nil {
 		return acc, err
 	}
 
@@ -50,9 +50,9 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 	}
 
 	if existingToken == "" {
-		storage.DB.QueryRow("SELECT create_reset_token($1, $2);", req.Email, token)
+		storage.PG.QueryRow("SELECT create_reset_token($1, $2);", req.Email, token)
 	} else {
-		storage.DB.QueryRow("SELECT update_reset_token($1, $2);", req.Email, token)
+		storage.PG.QueryRow("SELECT update_reset_token($1, $2);", req.Email, token)
 	}
 
 	resp := &pb.ResetTokenResponse{}
@@ -63,7 +63,7 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 
 // DeleteResetToken for user account
 func (u *User) DeleteResetToken(req *pb.ResetTokenRequest) (*pb.DeleteResetTokenResponse, error) {
-	storage.DB.QueryRow("SELECT delete_reset_token($1);", req.Email)
+	storage.PG.QueryRow("SELECT delete_reset_token($1);", req.Email)
 
 	resp := &pb.DeleteResetTokenResponse{}
 	resp.Success = true
@@ -75,7 +75,7 @@ func (u *User) DeleteResetToken(req *pb.ResetTokenRequest) (*pb.DeleteResetToken
 func (u *User) getResetToken(email string) (string, error) {
 	var token sql.NullString
 
-	if err := storage.DB.QueryRow("SELECT * FROM get_reset_token($1);", email).Scan(&token); err != nil {
+	if err := storage.PG.QueryRow("SELECT * FROM get_reset_token($1);", email).Scan(&token); err != nil {
 		return "", err
 	}
 
