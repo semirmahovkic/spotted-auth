@@ -56,9 +56,8 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		return nil, err
 	}
 
-	valid := util.ValidPassword(acc.Password, req.Password)
-	if !valid {
-		return nil, errors.New("Invalid password")
+	if valid := util.ValidPassword(acc.Password, req.Password); !valid {
+		return nil, errors.New("invalid password")
 	}
 
 	// Generate jwt token
