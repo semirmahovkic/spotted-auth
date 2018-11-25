@@ -22,7 +22,10 @@ func (u *User) Register(req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 		return nil, err
 	}
 
-	storage.PG.QueryRow("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
+	_, err = storage.PG.Exec("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.RegisterResponse{}, nil
 }
