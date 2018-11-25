@@ -22,10 +22,7 @@ func (u *User) Register(req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 		return nil, err
 	}
 
-	_, err = storage.DB.Query("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
-	if err != nil {
-		return nil, err
-	}
+	storage.DB.QueryRow("SELECT create_user($1, $2, $3, $4);", req.ID, req.Username, req.Email, pwd)
 
 	return &pb.RegisterResponse{}, nil
 }
@@ -37,7 +34,7 @@ func (u *User) GetByEmail(email string) (*pbu.Account, error) {
 	acc := &pbu.Account{}
 
 	if err := storage.DB.QueryRow("SELECT * FROM get_by_email($1);", email).Scan(&acc.ID, &acc.Username, &acc.Email, &acc.Password, &acc.CreatedAt); err != nil {
-		return nil, err
+		return acc, err
 	}
 
 	return acc, nil
@@ -53,15 +50,9 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 	}
 
 	if existingToken == "" {
-		_, err := storage.DB.Query("SELECT create_reset_token($1, $2);", req.Email, token)
-		if err != nil {
-			return nil, err
-		}
+		storage.DB.QueryRow("SELECT create_reset_token($1, $2);", req.Email, token)
 	} else {
-		_, err := storage.DB.Query("SELECT update_reset_token($1, $2);", req.Email, token)
-		if err != nil {
-			return nil, err
-		}
+		storage.DB.QueryRow("SELECT update_reset_token($1, $2);", req.Email, token)
 	}
 
 	resp := &pb.ResetTokenResponse{}
@@ -72,10 +63,7 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 
 // DeleteResetToken for user account
 func (u *User) DeleteResetToken(req *pb.ResetTokenRequest) (*pb.DeleteResetTokenResponse, error) {
-	_, err := storage.DB.Query("SELECT delete_reset_token($1);", req.Email)
-	if err != nil {
-		return nil, err
-	}
+	storage.DB.QueryRow("SELECT delete_reset_token($1);", req.Email)
 
 	resp := &pb.DeleteResetTokenResponse{}
 	resp.Success = true
