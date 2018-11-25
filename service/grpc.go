@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-var env = config.NewAuth()
+var conf = config.NewAuth()
 
 // ListenGRPC server
 func ListenGRPC() {
-	listener, err := net.Listen("tcp", ":"+env.Port)
+	listener, err := net.Listen("tcp", ":"+conf.Port)
 	if err != nil {
 		l.Log.Fatal("failed to create tcp listener: ", err)
 	}
