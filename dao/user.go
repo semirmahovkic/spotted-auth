@@ -50,9 +50,15 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 	}
 
 	if existingToken == "" {
-		storage.PG.QueryRow("SELECT create_reset_token($1, $2);", req.Email, token)
+		_, err := storage.PG.Exec("SELECT create_reset_token($1, $2);", req.Email, token)
+		if err != nil {
+			return nil, err
+		}
 	} else {
-		storage.PG.QueryRow("SELECT update_reset_token($1, $2);", req.Email, token)
+		_, err := storage.PG.Exec("SELECT update_reset_token($1, $2);", req.Email, token)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	resp := &pb.ResetTokenResponse{}
@@ -63,7 +69,10 @@ func (u *User) CreateResetToken(req *pb.ResetTokenRequest) (*pb.ResetTokenRespon
 
 // DeleteResetToken for user account
 func (u *User) DeleteResetToken(req *pb.ResetTokenRequest) (*pb.DeleteResetTokenResponse, error) {
-	storage.PG.QueryRow("SELECT delete_reset_token($1);", req.Email)
+	_, err := storage.PG.Exec("SELECT delete_reset_token($1);", req.Email)
+	if err != nil {
+		return nil, err
+	}
 
 	resp := &pb.DeleteResetTokenResponse{}
 	resp.Success = true
